@@ -1,11 +1,13 @@
 library lazy_load_scrollview;
 
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 enum LoadingStatus { LOADING, STABLE }
 
 /// Signature for EndOfPageListeners
-typedef void EndOfPageListenerCallback();
+typedef FutureCallback<T> = FutureOr<T> Function();
 
 /// A widget that wraps a [Widget] and will trigger [onEndOfPage] when it
 /// reaches the bottom of the list
@@ -14,13 +16,10 @@ class LazyLoadScrollView extends StatefulWidget {
   final Widget child;
 
   /// Called when the [child] reaches the end of the list
-  final EndOfPageListenerCallback onEndOfPage;
+  final FutureCallback onEndOfPage;
 
   /// The offset to take into account when triggering [onEndOfPage] in pixels
   final int scrollOffset;
-
-  /// Used to determine if loading of new data has finished. You should use set this if you aren't using a FutureBuilder or StreamBuilder
-  final bool isLoading;
 
   /// Prevented update nested listview with other axis direction
   final Axis scrollDirection;
@@ -33,7 +32,6 @@ class LazyLoadScrollView extends StatefulWidget {
     required this.child,
     required this.onEndOfPage,
     this.scrollDirection = Axis.vertical,
-    this.isLoading = false,
     this.scrollOffset = 100,
   }) : super(key: key);
 }
@@ -44,9 +42,8 @@ class LazyLoadScrollViewState extends State<LazyLoadScrollView> {
   @override
   void didUpdateWidget(LazyLoadScrollView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!widget.isLoading) {
-      loadMoreStatus = LoadingStatus.STABLE;
-    }
+
+    loadMoreStatus = LoadingStatus.STABLE;
   }
 
   @override
@@ -81,9 +78,12 @@ class LazyLoadScrollViewState extends State<LazyLoadScrollView> {
   }
 
   void _loadMore() {
-    if (loadMoreStatus == LoadingStatus.STABLE) {
-      loadMoreStatus = LoadingStatus.LOADING;
-      widget.onEndOfPage();
+    final futureOr = widget.onEndOfPage();
+    loadMoreStatus = LoadingStatus.LOADING;
+    if (futureOr is Future) {
+      futureOr.whenComplete(() {
+        loadMoreStatus = LoadingStatus.STABLE;
+      });
     }
   }
 }

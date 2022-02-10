@@ -40,35 +40,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future _loadMoreVertical() async {
-    setState(() {
-      isLoadingVertical = true;
-    });
-
     // Add in an artificial delay
     await new Future.delayed(const Duration(seconds: 2));
 
     verticalData.addAll(
         List.generate(increment, (index) => verticalData.length + index));
-
-    setState(() {
-      isLoadingVertical = false;
-    });
   }
 
   Future _loadMoreHorizontal() async {
-    setState(() {
-      isLoadingHorizontal = true;
-    });
-
     // Add in an artificial delay
     await new Future.delayed(const Duration(seconds: 2));
 
     horizontalData.addAll(
         List.generate(increment, (index) => horizontalData.length + index));
-
-    setState(() {
-      isLoadingHorizontal = false;
-    });
   }
 
   @override
@@ -78,7 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: LazyLoadScrollView(
-        isLoading: isLoadingVertical,
         onEndOfPage: () => _loadMoreVertical(),
         child: Scrollbar(
           child: ListView(
@@ -93,7 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
               Container(
                   height: 180,
                   child: LazyLoadScrollView(
-                      isLoading: isLoadingHorizontal,
                       scrollDirection: Axis.horizontal,
                       onEndOfPage: () => _loadMoreHorizontal(),
                       child: Scrollbar(
