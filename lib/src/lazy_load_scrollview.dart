@@ -40,13 +40,6 @@ class LazyLoadScrollViewState extends State<LazyLoadScrollView> {
   LoadingStatus loadMoreStatus = LoadingStatus.STABLE;
 
   @override
-  void didUpdateWidget(LazyLoadScrollView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    loadMoreStatus = LoadingStatus.STABLE;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       child: widget.child,
@@ -80,10 +73,9 @@ class LazyLoadScrollViewState extends State<LazyLoadScrollView> {
   void _loadMore() {
     final futureOr = widget.onEndOfPage();
     loadMoreStatus = LoadingStatus.LOADING;
-    if (futureOr is Future) {
-      futureOr.whenComplete(() {
-        loadMoreStatus = LoadingStatus.STABLE;
-      });
-    }
+    if (futureOr is Future)
+      futureOr.whenComplete(() => loadMoreStatus = LoadingStatus.STABLE);
+    else
+      loadMoreStatus = LoadingStatus.STABLE;
   }
 }
