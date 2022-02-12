@@ -37,7 +37,14 @@ class LazyLoadScrollView extends StatefulWidget {
 }
 
 class LazyLoadScrollViewState extends State<LazyLoadScrollView> {
-  LoadingStatus loadMoreStatus = LoadingStatus.STABLE;
+  var _loadMoreStatus = LoadingStatus.STABLE;
+
+  @override
+  void didUpdateWidget(covariant LazyLoadScrollView oldWidget) {
+    if (_loadMoreStatus == LoadingStatus.LOADING)
+      _loadMoreStatus = LoadingStatus.STABLE;
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +78,12 @@ class LazyLoadScrollViewState extends State<LazyLoadScrollView> {
   }
 
   void _loadMore() {
+    if (_loadMoreStatus == LoadingStatus.LOADING) return;
+
+    print('load more');
     final futureOr = widget.onEndOfPage();
-    loadMoreStatus = LoadingStatus.LOADING;
+    _loadMoreStatus = LoadingStatus.LOADING;
     if (futureOr is Future)
-      futureOr.whenComplete(() => loadMoreStatus = LoadingStatus.STABLE);
-    else
-      loadMoreStatus = LoadingStatus.STABLE;
+      futureOr.whenComplete(() => _loadMoreStatus = LoadingStatus.STABLE);
   }
 }
