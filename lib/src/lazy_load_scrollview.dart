@@ -6,9 +6,6 @@ import 'package:flutter/widgets.dart';
 
 enum LoadingStatus { LOADING, STABLE }
 
-/// Signature for EndOfPageListeners
-typedef FutureCallback<T> = FutureOr<T> Function();
-
 /// A widget that wraps a [Widget] and will trigger [onEndOfPage] when it
 /// reaches the bottom of the list
 class LazyLoadScrollView extends StatefulWidget {
@@ -16,7 +13,7 @@ class LazyLoadScrollView extends StatefulWidget {
   final Widget child;
 
   /// Called when the [child] reaches the end of the list
-  final FutureCallback onEndOfPage;
+  final Future Function() onEndOfPage;
 
   /// The offset to take into account when triggering [onEndOfPage] in pixels
   final int scrollOffset;
@@ -38,13 +35,6 @@ class LazyLoadScrollView extends StatefulWidget {
 
 class LazyLoadScrollViewState extends State<LazyLoadScrollView> {
   var _loadMoreStatus = LoadingStatus.STABLE;
-
-  @override
-  void didUpdateWidget(covariant LazyLoadScrollView oldWidget) {
-    if (_loadMoreStatus == LoadingStatus.LOADING)
-      _loadMoreStatus = LoadingStatus.STABLE;
-    super.didUpdateWidget(oldWidget);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +70,8 @@ class LazyLoadScrollViewState extends State<LazyLoadScrollView> {
   void _loadMore() {
     if (_loadMoreStatus == LoadingStatus.LOADING) return;
 
-    print('load more');
     final futureOr = widget.onEndOfPage();
     _loadMoreStatus = LoadingStatus.LOADING;
-    if (futureOr is Future)
-      futureOr.whenComplete(() => _loadMoreStatus = LoadingStatus.STABLE);
+    futureOr.whenComplete(() => _loadMoreStatus = LoadingStatus.STABLE);
   }
 }
