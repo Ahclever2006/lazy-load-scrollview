@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return const MaterialApp(
       title: 'Lazy Load Demo',
-      home: new MyHomePage(title: 'Lazy Load Demo'),
+      home: MyHomePage(title: 'Lazy Load Demo'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -41,18 +43,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future _loadMoreVertical() async {
     // Add in an artificial delay
-    await new Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 10));
 
     verticalData.addAll(
         List.generate(increment, (index) => verticalData.length + index));
+
+    setState(() {});
   }
 
   Future _loadMoreHorizontal() async {
     // Add in an artificial delay
-    await new Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 10));
 
     horizontalData.addAll(
         List.generate(increment, (index) => horizontalData.length + index));
+    setState(() {});
   }
 
   @override
@@ -66,14 +71,14 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Scrollbar(
           child: ListView(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Nested horizontal ListView',
                   textAlign: TextAlign.center,
                 ),
               ),
-              Container(
+              SizedBox(
                   height: 180,
                   child: LazyLoadScrollView(
                       scrollDirection: Axis.horizontal,
@@ -85,8 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               itemBuilder: (context, position) {
                                 return DemoItem(position);
                               })))),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Vertical ListView',
                   textAlign: TextAlign.center,
@@ -94,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               ListView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: verticalData.length,
                 itemBuilder: (context, position) {
                   return DemoItem(position);
@@ -134,11 +139,11 @@ class DemoItem extends StatelessWidget {
                     height: 40.0,
                     width: 40.0,
                   ),
-                  SizedBox(width: 8.0),
+                  const SizedBox(width: 8.0),
                   Text("Item $position"),
                 ],
               ),
-              Text(
+              const Text(
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sed vulputate orci. Proin id scelerisque velit. Fusce at ligula ligula. Donec fringilla sapien odio, et faucibus tortor finibus sed. Aenean rutrum ipsum in sagittis auctor. Pellentesque mattis luctus consequat. Sed eget sapien ut nibh rhoncus cursus. Donec eget nisl aliquam, ornare sapien sit amet, lacinia quam."),
             ],
           ),
