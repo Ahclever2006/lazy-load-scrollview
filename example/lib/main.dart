@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future _loadMoreVertical() async {
     // Add in an artificial delay
-    await Future.delayed(const Duration(seconds: 10));
+    await Future.delayed(const Duration(seconds: 3));
 
     verticalData.addAll(
         List.generate(increment, (index) => verticalData.length + index));
@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future _loadMoreHorizontal() async {
     // Add in an artificial delay
-    await Future.delayed(const Duration(seconds: 10));
+    await Future.delayed(const Duration(seconds: 3));
 
     horizontalData.addAll(
         List.generate(increment, (index) => horizontalData.length + index));
